@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.saoe.mapper.RankMapper">
+	<select id="selectRanking" resultType="RankingDTO">
+		select id, nick, profile,
+		member_score, grade from member order by member_score desc
+	</select>
+	<select id="selectGoodReviewScore" parameterType="int"
+		resultType="ScoreDTO">
+		select id, count(id) count from review where review_no in
+		(SELECT review_no FROM review_member where #{day} > (TO_DATE(sysdate,
+		'YYYY-MM-DD') - TO_DATE(review_gb_date, 'YYYY-MM-DD')) and review_gb =
+		1) group by id
+	</select>
+	<select id="selectBadReviewScore" parameterType="int"
+		resultType="ScoreDTO">
+		select id, count(id) count from review where review_no in
+		(SELECT review_no FROM review_member where #{day} > (TO_DATE(sysdate,
+		'YYYY-MM-DD') - TO_DATE(review_gb_date, 'YYYY-MM-DD')) and review_gb =
+		-1) group by id
+	</select>
+	<select id="selectBlockReviewScore" parameterType="int"
+		resultType="ScoreDTO">
+		select id, count(id) count from review where review_no in
+		(select review_no from review_member where #{day} > (TO_DATE(sysdate,
+		'YYYY-MM-DD') - TO_DATE(review_rep_date, 'YYYY-MM-DD')) and
+		review_rep_yn = 1) group by id
+	</select>
+	<select id="selectReportReviewScore" parameterType="int"
+		resultType="ScoreDTO">
+		select id, count(id) count from review where review_no in
+		(select review_no from review_member where #{day} > (TO_DATE(sysdate,
+		'YYYY-MM-DD') - TO_DATE(review_block_date, 'YYYY-MM-DD')) and
+		review_block_yn = 1) group by id
+	</select>
+	<select id="selectScrapReviewScore" parameterType="int"
+		resultType="ScoreDTO">
+		select id, count(id) count from review where review_no in
+		(select review_no from review_member where #{day} > (TO_DATE(sysdate,
+		'YYYY-MM-DD') - TO_DATE(review_scrap_date, 'YYYY-MM-DD')) and
+		review_scrap_yn = 1) group by id
+	</select>
+	<select id="selectReviewScore" parameterType="int"
+		resultType="ScoreDTO">
+		select id, count(id) count from review where #{day} >
+		(TO_DATE(sysdate, 'YYYY-MM-DD') - TO_DATE(review_post_date,
+		'YYYY-MM-DD')) group by id
+	</select>
+	<select id="selectFollowUserScore" parameterType="int"
+		resultType="ScoreDTO">
+		select m.id id, count(mm.id) count from member m,
+		member_member mm where m.id = mm.id and m.id in (select id from
+		member_member where #{day} > (TO_DATE(sysdate, 'YYYY-MM-DD') -
+		TO_DATE(member_follow_date, 'YYYY-MM-DD')) and member_follow_yn = 1)
+		group by mm.id
+	</select>
+	<select id="selectReportUserScore" parameterType="int"
+		resultType="ScoreDTO">
+		select m.id id, count(mm.id) count from member m,
+		member_member mm where m.id = mm.id and m.id in (select id from
+		member_member where #{day} > (TO_DATE(sysdate, 'YYYY-MM-DD') -
+		TO_DATE(member_rep_date, 'YYYY-MM-DD')) and member_rep_yn = 1) group
+		by mm.id
+	</select>
+	<select id="selectBlockUserScore" parameterType="int"
+		resultType="ScoreDTO">
+		select m.id id, count(mm.id) count from member m,
+		member_member mm where m.id = mm.id and m.id in (select id from
+		member_member where #{day} > (TO_DATE(sysdate, 'YYYY-MM-DD') -
+		TO_DATE(member_block_date, 'YYYY-MM-DD')) and member_block_yn = 1)
+		group by mm.id
+	</select>
+
+</mapper>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.saoe.mapper.MessageMapper">
+	<select id="selectReceiveMessage" resultType="MessageDTO">
+		select * from
+		message where receive_id = #{id} order by message_date desc
+	</select>
+	<select id="selectSendMessage" resultType="MessageDTO">
+		select * from message
+		where send_id = #{id} order by message_date desc
+	</select>
+
+	<insert id="sendMessage" parameterType="MessageDTO">
+		insert into message
+		(send_id, receive_id, message_date, message_content, review_no) values
+		(#{send_id}, #{receive_id}, sysdate, #{message_content}, null)
+	</insert>
+
+	<insert id="sendReviewMessage" parameterType="MessageDTO">
+		insert into message
+		(send_id, receive_id, message_date, message_content, review_no) values
+		(#{send_id}, #{receive_id}, sysdate, #{message_content}, #{review_no})
+	</insert>
+
+	<select id="selectFFF" resultType="FFFDTO">
+		select m.id id, m.nick nick
+		from member m, member_member mm
+		where m.id = mm.actor_id and mm.actor_id in (select actor_id from
+		member_member where id = #{id} and member_follow_yn = 1) and
+		member_follow_yn = 1
+	</select>
+</mapper>

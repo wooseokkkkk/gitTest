@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.saoe.mapper.MemberMapper">
+
+	<insert id="join" parameterType="MemberDTO">
+		insert into member (id, pw,
+		name, nick, tel, addr, birth, gender, profile, profile_message,
+		join_date, member_score, grade)
+		values (#{id}, #{pw}, #{name}, #{nick},
+		#{tel}, #{addr}, #{birth},
+		#{gender}, #{profile}, #{profile_message},
+		sysdate, #{member_score}, #{grade})
+	</insert>
+
+	<select id="login" parameterType="LoginDTO"
+		resultType="SessionUserDTO">
+		select id, name, nick, profile, profile_message from member
+		where id = #{id} and pw = #{pw}
+	</select>
+
+	<select id="selectFollowerCnt" resultType="int">
+		select count(*) from
+		member_member where id = #{id} and member_follow_yn = 1
+	</select>
+
+	<select id="selectFollowingCnt" resultType="int">
+		select count(*) from
+		member_member where actor_id = #{id} and member_follow_yn = 1
+	</select>
+
+	<select id="selectUpdateMember" resultType="memberDTO">
+		select * from member
+		where id = #{id}
+	</select>
+	<select id="loginMember" parameterType="MemberDTO"
+		resultType="MemberMemberDTO">
+		select * from member_member where actor_id = #{id}
+	</select>
+
+	<select id="loginReview" parameterType="MemberDTO"
+		resultType="ReviewMemberDTO">
+		select * from review_member where actor_id = #{id}
+	</select>
+
+	<select id="loginRest" parameterType="MemberDTO"
+		resultType="RestMemberDTO">
+		select * from rest_member where actor_id = #{id}
+	</select>
+	
+	<update id="updateMember" parameterType="MemberDTO">
+		update member set pw=#{pw}, tel=#{tel}, addr=#{addr}, profile_message=#{profile_message} where id = #{id}
+	</update>
+
+	<update id="followMember" parameterType="MemberMemberDTO">
+		MERGE INTO member_member
+		USING DUAL
+		ON (id = #{id} AND actor_id = #{actor_id})
+		WHEN NOT
+		MATCHED
+		THEN
+		INSERT (id, actor_id, member_follow_yn,
+		member_follow_date)
+		values
+		(#{id}, #{actor_id}, #{member_follow_yn}, sysdate)
+		WHEN MATCHED
+		THEN
+		UPDATE SET
+		member_follow_yn = #{member_follow_yn}, member_follow_date =
+		sysdate
+	</update>
+
+	<update id="blockMember" parameterType="MemberMemberDTO">
+		MERGE INTO member_member
+		USING DUAL
+		ON (id = #{id} AND actor_id = #{actor_id})
+		WHEN NOT
+		MATCHED
+		THEN
+		INSERT (id, actor_id, member_block_yn,
+		member_block_date)
+		values
+		(#{id}, #{actor_id}, #{member_block_yn}, sysdate)
+		WHEN MATCHED
+		THEN
+		UPDATE SET
+		member_block_yn = #{member_block_yn}, member_block_date =
+		sysdate
+	</update>
+
+	<update id="reportMember" parameterType="MemberMemberDTO">
+		MERGE INTO member_member
+		USING DUAL
+		ON (id = #{id} AND actor_id = #{actor_id})
+		WHEN NOT
+		MATCHED
+		THEN
+		INSERT (id, actor_id, member_rep_yn, member_rep_content,
+		member_rep_date)
+		values
+		(#{id}, #{actor_id}, #{member_rep_yn},
+		#{member_rep_content}, sysdate)
+		WHEN MATCHED
+		THEN
+		UPDATE SET
+		member_rep_yn = #{member_rep_yn}, member_rep_content =
+		#{member_rep_content}, member_rep_date =
+		sysdate
+	</update>
+
+	<insert id="insertInter" parameterType="InterestDTO">
+		insert all
+		<foreach collection="list" item="item" index="index" open=""
+			separator=" " close="SELECT * FROM DUAL">
+			into interests
+			(id, code_no)
+			VALUES
+			(#{item.id}, #{item.code_no})
+
+		</foreach>
+	</insert>
+	
+	<select id="selectInter" resultType="InterestDTO">
+		select * from interests where id = #{id}
+	</select>
+	
+	<delete id="deleteInter">
+		delete from interests where id = #{id}
+	</delete>
+	
+	
+
+
+
+</mapper>

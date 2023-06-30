@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.saoe.mapper.FeedMapper">
+	<insert id="writeReply" parameterType="ReplyDTO">
+		insert into reply (reply_no, review_no, reply_date, id, reply_content, parent_no) values (reply_no.nextval, #{review_no}, sysdate, #{id}, #{reply_content}, null)
+	</insert>
+	<insert id="writeReply2" parameterType="ReplyDTO">
+		insert into reply (reply_no, review_no, reply_date, id, reply_content, parent_no) values (reply_no.nextval, #{review_no}, sysdate, #{id}, #{reply_content}, #{parent_no})
+	</insert>
+</mapper>

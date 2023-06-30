@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-config.dtd">
+  
+<configuration>
+	<properties resource="com/saoe/mybatis/db.properties"></properties>
+	
+	<typeAliases>
+		<typeAlias type="com.saoe.model.category.CategoryDTO" alias="CategoryDTO"/>
+		<typeAlias type="com.saoe.model.feed.FeedDTO" alias="FeedDTO"/>
+		<typeAlias type="com.saoe.model.reply.ReplyDTO" alias="ReplyDTO"/>
+		
+		<typeAlias type="com.saoe.model.message.MessageDTO" alias="MessageDTO"/>
+		<typeAlias type="com.saoe.model.message.FFFDTO" alias="FFFDTO"/>
+		
+		<typeAlias type="com.saoe.model.review.ReviewDTO" alias="ReviewDTO"/>
+		<typeAlias type="com.saoe.model.review.ReviewPicDTO" alias="ReviewPicDTO"/>
+		
+		
+		<typeAlias type="com.saoe.model.restaurant.RestaurantDTO" alias="RestaurantDTO"/>
+		<typeAlias type="com.saoe.model.restaurant.RestPicDTO" alias="RestPicDTO"/>
+		
+		<typeAlias type="com.saoe.model.member.MemberDTO" alias="MemberDTO"/>
+		<typeAlias type="com.saoe.model.member.LoginDTO" alias="LoginDTO"/>
+		<typeAlias type="com.saoe.model.member.SessionUserDTO" alias="SessionUserDTO"/>
+		<typeAlias type="com.saoe.model.member.MemberMemberDTO" alias="MemberMemberDTO"/>
+		<typeAlias type="com.saoe.model.member.ReviewMemberDTO" alias="ReviewMemberDTO"/>
+		<typeAlias type="com.saoe.model.member.RestMemberDTO" alias="RestMemberDTO"/>
+		<typeAlias type="com.saoe.model.member.InterestDTO" alias="InterestDTO"/>
+		
+		<typeAlias type="com.saoe.model.search.SearchDTO" alias="SearchDTO"/>
+		<typeAlias type="com.saoe.model.search.SearchReviewDTO" alias="SearchReviewDTO"/>
+		<typeAlias type="com.saoe.model.search.SearchRestDTO" alias="SearchRestDTO"/>
+		<typeAlias type="com.saoe.model.search.SearchMemberDTO" alias="SearchMemberDTO"/>
+		
+		<typeAlias type="com.saoe.model.rank.RankingDTO" alias="RankingDTO"/>
+		<typeAlias type="com.saoe.model.rank.ScoreDTO" alias="ScoreDTO"/>
+		
+		<typeAlias type="com.saoe.model.profile.ProfileDTO" alias="ProfileDTO"/>
+		<typeAlias type="com.saoe.model.profile.ProfileFeedDTO" alias="ProfileFeedDTO"/>
+		<typeAlias type="com.saoe.model.profile.ProfileFollowDTO" alias="ProfileFollowDTO"/>
+		<typeAlias type="com.saoe.model.profile.ProfileBlockDTO" alias="ProfileBlockDTO"/>
+		<typeAlias type="com.saoe.model.profile.ProfileReportDTO" alias="ProfileReportDTO"/>
+		<typeAlias type="com.saoe.model.profile.ProfileRestDTO" alias="ProfileRestDTO"/>
+	</typeAliases>
+	
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="${driver}" />
+				<property name="url" value="${url}" />
+				<property name="username" value="${username}" />
+				<property name="password" value="${password}" />
+			</dataSource>
+		</environment>
+	</environments>
+	
+	<mappers>
+		<mapper resource="com/saoe/mapper/MemberMapper.xml" />
+		<mapper resource="com/saoe/mapper/MessageMapper.xml" />
+		<mapper resource="com/saoe/mapper/ReviewMapper.xml" />
+		<mapper resource="com/saoe/mapper/RestMapper.xml" />
+		<mapper resource="com/saoe/mapper/FeedMapper.xml" />
+		<mapper resource="com/saoe/mapper/ReplyMapper.xml" />
+		<mapper resource="com/saoe/mapper/CateMapper.xml" />
+		<mapper resource="com/saoe/mapper/ProfileMapper.xml" />
+		<mapper resource="com/saoe/mapper/SearchMapper.xml" />
+		<mapper resource="com/saoe/mapper/RankMapper.xml" />
+	</mappers>
+	
+</configuration>

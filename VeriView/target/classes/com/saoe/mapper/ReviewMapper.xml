@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.saoe.mapper.ReviewMapper">
+	<insert id="uploadReview" parameterType="ReviewDTO">
+		insert into review(review_no, id, foreign_review_url, rest_no,
+		review_content, review_score, review_display, review_post_date)
+		values
+		(review_no.nextval, #{id}, #{foreign_review_url}, #{rest_no},
+		#{review_content}, 0, 1, sysdate)
+
+		<selectKey keyProperty="review_no" resultType="int"
+			order="AFTER">
+			SELECT review_no.CURRVAL AS review_no FROM DUAL
+		</selectKey>
+	</insert>
+
+	<insert id="uploadPic" parameterType="ReviewPicDTO">
+		insert into review_pic (
+			review_pic_no,
+			review_no,
+			review_pic_src,
+			review_pic_size
+			)
+			select review_pic_no.nextval as review_pic_no, T.*
+			from (
+				<foreach collection="list" item="item" index="index" separator="union all">
+					select #{item.review_no} as review_no,
+							#{item.review_pic_src} as review_pic_src,
+							#{item.review_pic_size} as review_pic_size
+					from sys.dual
+				</foreach>		
+			) T
+	</insert>
+
+	<select id="selectAllReview" resultType="ReviewDTO">
+		select * from review
+		order by
+		review_post_date desc
+	</select>
+	
+	<select id="selectUserReview" parameterType="ReviewDTO" resultType="ReviewDTO">
+		select * from review where id = #{id}
+	</select>
+
+	<select id="feedReviewPic" parameterType="ReviewDTO"
+		resultType="ReviewPicDTO">
+		select * from review_pic where review_no = #{review_no}
+	</select>
+
+	<select id="feedReviewReply" parameterType="ReviewDTO"
+		resultType="ReplyDTO">
+		select * from reply where review_no = #{review_no}
+	</select>
+
+	<select id="selectReviewer" parameterType="ReviewDTO"
+		resultType="MemberDTO">
+		select nick, profile from member where id = #{id}
+	</select>
+
+	<select id="selectCategory" parameterType="RestaurantDTO"
+		resultType="CategoryDTO">
+		select * from category where code_no = #{code_no}
+	</select>
+
+	<select id="selectReview" parameterType="ReviewDTO"
+		resultType="ReviewDTO">
+		select * from review where review_no = #{review_no}
+	</select>
+
+	<update id="deleteReview" parameterType="ReviewDTO">
+		update review set
+		review_display = 0 where review_no = #{review_no}
+	</update>
+
+	<update id="updateReview" parameterType="ReviewDTO">
+		update review set
+		review_content = #{review_content}, review_update_date = sysdate where
+		review_no = #{review_no}
+	</update>
+
+	<update id="scrapReview" parameterType="ReviewMemberDTO">
+		MERGE INTO review_member
+		USING DUAL
+		ON (review_no = #{review_no} AND actor_id = #{actor_id})
+		WHEN NOT
+		MATCHED THEN
+		INSERT (review_no, actor_id, review_scrap_yn,
+		review_scrap_date)
+		values (#{review_no}, #{actor_id},
+		#{review_scrap_yn}, sysdate)
+		WHEN MATCHED
+		THEN
+		UPDATE SET
+		review_scrap_yn
+		= #{review_scrap_yn}, review_scrap_date = sysdate
+	</update>
+
+	<update id="blockReview" parameterType="ReviewMemberDTO">
+		MERGE INTO review_member
+		USING DUAL
+		ON (review_no = #{review_no} AND actor_id = #{actor_id})
+		WHEN NOT
+		MATCHED THEN
+		INSERT (review_no, actor_id, review_block_yn,
+		review_block_date)
+		values (#{review_no}, #{actor_id},
+		#{review_block_yn}, sysdate)
+		WHEN MATCHED
+		THEN
+		UPDATE SET
+		review_block_yn
+		= #{review_block_yn}, review_block_date = sysdate
+	</update>
+
+	<update id="reportReview" parameterType="ReviewDTO">
+		MERGE INTO review_member
+		USING DUAL
+		ON (review_no = #{review_no} AND actor_id = #{actor_id})
+		WHEN NOT
+		MATCHED THEN
+		INSERT (review_no, actor_id, review_rep_yn,
+		review_rep_content, review_rep_date)
+		values (#{review_no}, #{actor_id},
+		#{review_rep_yn},
+		#{review_rep_content},sysdate)
+		WHEN MATCHED
+		THEN
+		UPDATE SET
+		review_rep_yn
+		= #{review_rep_yn},
+		review_rep_content = #{review_rep_content}, review_rep_date =
+		sysdate
+	</update>
+
+	<update id="gbReview" parameterType="ReviewMemberDTO">
+		MERGE INTO review_member
+		USING DUAL
+		ON (review_no = #{review_no} AND actor_id = #{actor_id})
+		WHEN NOT
+		MATCHED THEN
+		INSERT (review_no, actor_id, review_gb,
+		review_gb_date)
+		values (#{review_no}, #{actor_id}, #{review_gb},
+		sysdate)
+		WHEN MATCHED
+		THEN
+		UPDATE SET
+		review_gb = #{review_gb},
+		review_gb_date = sysdate
+	</update>
+
+</mapper>
+
